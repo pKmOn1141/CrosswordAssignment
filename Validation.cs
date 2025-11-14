@@ -1,14 +1,11 @@
 ﻿using System.Linq;
+using UserManager;
+using FileManager;
 
 namespace Validation
 {
-    public class Validator
+    class Validator
     {
-        public Validator()
-        {
-
-        }
-
         /// <summary>
         /// Asks for a char, then checks it is valid based of the charArray
         /// </summary>
@@ -36,6 +33,21 @@ namespace Validation
                 }
             }
 
+        }
+
+        /// <summary>
+        /// Creates files on first run, and checks they still exist
+        /// </summary>
+        public void FirstLoadCheck(String filePath, UserList userAccounts)
+        {
+            if (!File.Exists(filePath))
+            {
+                userAccounts.NewUser("admin", "password", true);
+                userAccounts.SerialiseList(filePath);
+                Console.WriteLine("File NOT loaded. Login with 'admin' and 'password' or REGISTER an account. Press any key to continue.");
+                Console.ReadKey(true);
+                Console.Clear();
+            }
         }
     }
 }

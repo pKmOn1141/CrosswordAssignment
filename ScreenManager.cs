@@ -139,6 +139,8 @@ namespace ScreenManager
                         DisplaySub(subMenu, row_pos);
                         break;
                     case 'q':
+                        ClearConsoleLine();
+                        Console.SetCursorPosition(0, OPTION_LINE + 3);
                         Console.WriteLine("Exiting...");
                         Environment.Exit(0);
                         break;
