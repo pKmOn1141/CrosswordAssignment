@@ -1,6 +1,4 @@
-﻿using System.Reflection.Metadata.Ecma335;
-using System.Security.Cryptography.X509Certificates;
-using Validation;
+﻿using Validation;
 
 namespace ScreenManager
 {
@@ -58,7 +56,7 @@ namespace ScreenManager
         {
             // Creating objects for each menu subsection
             _sections.Add(new MenuSection("Create", ["New", "Load"], 1, false, [], 0));
-            _sections.Add(new MenuSection("Solve", ["New", "Continue"], 0, false, [], 12));
+            _sections.Add(new MenuSection("Solve", ["New", "Load"], 0, false, [], 12));
             _sections.Add(new MenuSection("User", ["Login", "Register"], -1, true, ["Log out", "Change Role"], 23));
             _sections.Add(new MenuSection("Quit", [""], -1, false, [], 33));
             _screenWidth = Console.WindowWidth;
@@ -87,11 +85,23 @@ namespace ScreenManager
             MenuInteraction();
         }
 
+        // Used to clear the given console lines
+        public void ClearConsoleLine()
+        {
+            for (int i = 0; i < 2; i++)
+            {
+                Console.SetCursorPosition(0, (OPTION_LINE+1) + i);
+                Console.Write(new String(' ', Console.BufferWidth));
+            }
+        }
+
         // Display the drop down menus
         public void DisplaySub(String[] a, int p)
         {
-            // Working here
+            ClearConsoleLine();
             int target_line = OPTION_LINE;
+            Console.SetCursorPosition(p, target_line+1);
+            // Iterate each line, displaying the correct submenu item
             foreach (String sub in a)
             {
                 Console.Write(sub);
@@ -129,9 +139,8 @@ namespace ScreenManager
                         DisplaySub(subMenu, row_pos);
                         break;
                     case 'q':
-                        subMenu = _sections[3].dropDown;
-                        row_pos = _sections[3].row_position;
-                        DisplaySub(subMenu, row_pos);
+                        Console.WriteLine("Exiting...");
+                        Environment.Exit(0);
                         break;
                     default:
                         moveOn = true;
