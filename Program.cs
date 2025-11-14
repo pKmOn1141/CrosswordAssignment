@@ -7,7 +7,7 @@ namespace CrosswordAssignment
         static void Main(string[] args)
         {
             Menu mainMenu = new Menu();
-            mainMenu.displayMenu();
+            mainMenu.DisplayMenu();
         }
     }
 }
