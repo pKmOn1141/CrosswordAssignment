@@ -22,7 +22,7 @@ namespace FileManager
                     }
                 }
             }
-            catch (IOException e)
+            catch (IOException)
             {
                 Console.WriteLine("Error to serialize");
             }

@@ -10,8 +10,8 @@ namespace CrosswordAssignment
         static void Main(string[] args)
         {
             // Crucial objects
-            Menu mainMenu = new Menu();
             UserList userAccounts = new UserList();
+            Menu mainMenu = new Menu(userAccounts);
             Validator validation = new Validator();
 
             //Crucial variables
