@@ -82,6 +82,7 @@ namespace Validation
             return false;
         }
 
+        // Checks a valid integer has been inputted
         public int IntCheck()
         {
             try
@@ -94,5 +95,60 @@ namespace Validation
                 return -99;
             }
         }
+
+        // Repeats until an arrow key is pressed
+        public (int[], bool) ArrowCheck(int[] currCell, int nRow, int nCol)
+        {
+            bool enter = false;
+            int row = currCell[0];
+            int col = currCell[1];
+            ConsoleKeyInfo input = Console.ReadKey(true);
+            switch (input.Key)
+            {
+                case ConsoleKey.UpArrow:
+                    if (!PosCheck(--row, nRow))
+                    {
+                        row++;
+                    }
+                    break;
+                case ConsoleKey.DownArrow:
+                    if (!PosCheck(++row, nRow))
+                    {
+                        row--;
+                    }
+                    break;
+                case ConsoleKey.LeftArrow:
+                    if (!PosCheck(--col, nCol))
+                    {
+                        col++;
+                    }
+                    break;
+                case ConsoleKey.RightArrow:
+                    if (!PosCheck(++col, nCol))
+                    {
+                        col--;
+                    }
+                    break;
+                case ConsoleKey.Enter:
+                    enter = true;
+                    break;
+            }
+            return ([row, col], enter);
+        }
+
+        // Checks that the current cell position can allow movement
+        public bool PosCheck(int pos1, int poslim)
+        {
+            // If the location will be invalid
+            if (pos1 < 0 || pos1 > poslim-1)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+
     }
 }

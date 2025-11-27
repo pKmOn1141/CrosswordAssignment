@@ -1,6 +1,7 @@
 ﻿using System.Runtime.InteropServices;
 using UserManager;
 using Validation;
+using CrosswordManager;
 using static System.Collections.Specialized.BitVector32;
 
 namespace ScreenManager
@@ -89,6 +90,7 @@ namespace ScreenManager
 
         private Validator val = new Validator();
         private AccountMenu LoginPage;
+        private CrosswordScreens _cwScreen = new CrosswordScreens();
 
         public Menu(UserList a)
         {
@@ -117,7 +119,9 @@ namespace ScreenManager
             Char[] availableInp = CreateMainMenu();
 
             Console.Write("\n\n\n\n\n\n\n\n\n");
+            Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine("Press the key that matches the first letter of the menu you want to open. Press 'b' to go back.");
+            Console.ForegroundColor = ConsoleColor.White;
             Console.Write("Created by James Curzon, 2025\n");
             Console.SetCursorPosition(0, 4);
             MenuInteraction(availableInp);
@@ -228,19 +232,19 @@ namespace ScreenManager
                 {
                     case 'c':
                         DisplaySub(0);
-                        SubChoice(0);
+                        SubChoice(0, 0);
                         fin = true;
                         DisplayMenu();
                         break;
                     case 's':
                         DisplaySub(1);
-                        SubChoice(1);
+                        SubChoice(1, 1);
                         fin = true;
                         DisplayMenu();
                         break;
                     case 'u':
                         DisplaySub(2);
-                        SubChoice(2);
+                        SubChoice(2, 2);
                         fin = true;
                         DisplayMenu();
                         break;
@@ -257,7 +261,7 @@ namespace ScreenManager
         }
 
         // Controls making choices when in a submenu
-        public void SubChoice(int i)
+        public void SubChoice(int i, int section)
         {
             bool changeSection = _sections[i].change;
             char subInp;
@@ -286,8 +290,10 @@ namespace ScreenManager
                     {
                         // new
                         case 'n':
-                            Console.Clear();
-                            Console.WriteLine("new");
+                            if (section == 0)
+                            {
+                                _cwScreen.IniCreationMenu();
+                            }
                             break;
                             // load
                         case 'l':
@@ -495,7 +501,9 @@ namespace ScreenManager
             else
             {
                 Console.SetCursorPosition((Console.WindowWidth / 2) - (VAL.Length / 2), 2);
+                Console.ForegroundColor = ConsoleColor.Yellow;
                 Console.Write(VAL);
+                Console.ForegroundColor = ConsoleColor.White;
 
                 // Prints the menu
                 int line = 6;

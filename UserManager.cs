@@ -1,6 +1,8 @@
 ﻿using FileManager;
 using Newtonsoft.Json;
 using System.Runtime.InteropServices;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace UserManager
 {
@@ -17,9 +19,29 @@ namespace UserManager
             fileHandler.SerialiseObj(path, accounts);
         }
 
+        // Hash any string to Sha256
+        public String StringHash(String input)
+        {
+            // Creating the hash
+            using (SHA256 shaHash = SHA256.Create())
+            {
+                byte[] hash = shaHash.ComputeHash(Encoding.UTF8.GetBytes(input));
+
+                // byte array to string
+                StringBuilder sb = new StringBuilder();
+                for (int i=0; i<hash.Length; i++)
+                {
+                    // hex to string
+                    sb.Append(hash[i].ToString("x2"));
+                }
+                return sb.ToString();
+            }
+
+        }
+
         public void NewUser(String name, String pwd, bool role)
         {
-            accounts.Add(new User(name, pwd, role));
+            accounts.Add(new User(name, StringHash(pwd), role));
             SerialiseList(USER_FILE);
         }
         
@@ -33,6 +55,8 @@ namespace UserManager
         {
             bool verified = false;
             bool admin = false;
+            // Hash the input for checking
+            pwd = StringHash(pwd);
 
             foreach (User account in accounts)
             {
