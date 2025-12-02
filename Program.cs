@@ -9,15 +9,16 @@ namespace CrosswordAssignment
     {
         static void Main(string[] args)
         {
-            // Crucial objects
-            UserList userAccounts = new UserList();
-            Menu mainMenu = new Menu(userAccounts);
-            Validator validation = new Validator();
-
             //Crucial variables
             const String USER_FILE = "users.json";
+            const String CWD_FOLDER = "Crosswords";
 
-            validation.FirstLoadCheck(USER_FILE, userAccounts);
+            // Crucial objects
+            UserList userAccounts = new UserList();
+            Menu mainMenu = new Menu(userAccounts, CWD_FOLDER);
+            Validator validation = new Validator();
+
+            validation.FirstLoadCheck(USER_FILE, CWD_FOLDER, userAccounts);
             mainMenu.DisplayMenu();
         }
     }

@@ -38,8 +38,9 @@ namespace Validation
         /// <summary>
         /// Creates files on first run, and checks they still exist
         /// </summary>
-        public void FirstLoadCheck(String filePath, UserList userAccounts)
+        public void FirstLoadCheck(String filePath, String folderPath, UserList userAccounts)
         {
+            // If user file doesnt exist
             if (!File.Exists(filePath))
             {
                 userAccounts.NewUser("admin", "password", true);
@@ -48,10 +49,14 @@ namespace Validation
                 Console.ReadKey(true);
                 Console.Clear();
             }
+            // If it does
             else
             {
                 files.DeSerialiseUser(filePath, userAccounts);
             }
+
+            // Ensure the crossword folder exists
+            Directory.CreateDirectory(folderPath);
         }
 
         // Checks to see if a username is already taken
@@ -97,9 +102,9 @@ namespace Validation
         }
 
         // Repeats until an arrow key is pressed
-        public (int[], bool) ArrowCheck(int[] currCell, int nRow, int nCol)
+        public (int[], int) ArrowCheck(int[] currCell, int nRow, int nCol)
         {
-            bool enter = false;
+            int altFunc = 0;
             int row = currCell[0];
             int col = currCell[1];
             ConsoleKeyInfo input = Console.ReadKey(true);
@@ -130,10 +135,13 @@ namespace Validation
                     }
                     break;
                 case ConsoleKey.Enter:
-                    enter = true;
+                    altFunc = 1;
+                    break;
+                case ConsoleKey.Escape:
+                    altFunc = 2;
                     break;
             }
-            return ([row, col], enter);
+            return ([row, col], altFunc);
         }
 
         // Checks that the current cell position can allow movement

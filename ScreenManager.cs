@@ -90,12 +90,13 @@ namespace ScreenManager
 
         private Validator val = new Validator();
         private AccountMenu LoginPage;
-        private CrosswordScreens _cwScreen = new CrosswordScreens();
+        private CrosswordScreens _cwScreen;
 
-        public Menu(UserList a)
+        public Menu(UserList a, String cF)
         {
             _userAccounts = a;
             LoginPage = new AccountMenu(a);
+            _cwScreen = new CrosswordScreens(cF);
 
             // Creating objects for each menu subsection
             _sections.Add(new MenuSection("Create", ["New", "Load"], ['n', 'l', 'b'], 0, false, [], [], 0));
@@ -290,6 +291,7 @@ namespace ScreenManager
                     {
                         // new
                         case 'n':
+                            // Create section
                             if (section == 0)
                             {
                                 _cwScreen.IniCreationMenu();
@@ -297,8 +299,10 @@ namespace ScreenManager
                             break;
                             // load
                         case 'l':
-                            Console.Clear();
-                            Console.WriteLine("load");
+                            if (section == 0)
+                            {
+                                _cwScreen.LoadCreationMenu();
+                            }
                             break;
                         default:
                             break;
