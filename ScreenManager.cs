@@ -419,7 +419,8 @@ namespace ScreenManager
             String success = "Successfully Logged In, press any key to continue";
             String unsuccess = "Unsuccessful login, please try again. Press any key to continue";
 
-            var results = _userAccounts.UserVerification(userInp, passInp);
+            // Fix: Ensure non-null arguments for UserVerification
+            var results = _userAccounts.UserVerification(userInp ?? string.Empty, passInp ?? string.Empty);
 
             if (results.Item1 == true)
             {
@@ -461,6 +462,15 @@ namespace ScreenManager
 
             String success = "Successfully registered, press any key to continue";
             String unsuccess = "Unsuccessful registration, please try again. Press any key to continue";
+
+            if (userInp == null)
+            {
+                userInp = string.Empty;
+            }
+            if (passInp == null)
+            {
+                passInp = string.Empty;
+            }
 
             // If name isnt taken
             if (_val.UsernameCheck(userInp, _userAccounts))
@@ -521,7 +531,7 @@ namespace ScreenManager
                 }
 
                 Console.SetCursorPosition((Console.WindowWidth / 3) + tabs[0].Length, 6);
-                String userInp = Console.ReadLine();
+                String? userInp = Console.ReadLine();
                 Console.SetCursorPosition((Console.WindowWidth / 3) + tabs[1].Length, 9);
                 // Checks the inputted int is valid
                 int changeInp = _val.IntCheck();
@@ -536,7 +546,7 @@ namespace ScreenManager
                 else
                 {
                     Console.Clear();
-                    bool changed = _userAccounts.ChangeUserRole(userInp, changeInp);
+                    bool changed = _userAccounts.ChangeUserRole(userInp ?? string.Empty, changeInp);
                     if (changed)
                     {
                         Console.SetCursorPosition((Console.WindowWidth / 2) - (SCC.Length / 2), 2);

@@ -59,8 +59,11 @@ namespace FileManager
                     String? line = sr.ReadLine();
                     while (line != null)
                     {
-                        User user = JsonConvert.DeserializeObject<User>(line);
-                        accounts.NewUser(user);
+                        User? user = JsonConvert.DeserializeObject<User>(line);
+                        if (user != null)
+                        {
+                            accounts.NewUser(user);
+                        }
                         line = sr.ReadLine();
                     }
                 }

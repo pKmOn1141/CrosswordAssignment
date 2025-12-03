@@ -26,11 +26,16 @@ namespace CrosswordManager
             int line = 4;
             bool moveOn = false;
             // Title
-            String title = "";
+            String? title = "";
             while (!moveOn)
             {
                 Console.SetCursorPosition(((Console.WindowWidth) / 3)+20, line);
                 title = Console.ReadLine();
+                if (title == null)
+                {
+                    title = string.Empty;
+                }
+
                 if (!_val.BlankCheck([title]))
                 {
                     moveOn = true;
@@ -70,11 +75,16 @@ namespace CrosswordManager
             Console.Write("Title:");
 
             bool fail = true;
-            string crossName = "";
+            string? crossName = "";
+            
             while (fail)
             {
                 Console.SetCursorPosition(pos[0] + 10, pos[1]);
                 crossName = Console.ReadLine();
+                if (crossName == null)
+                {
+                    crossName = string.Empty;
+                }
                 fail = _val.BlankCheck([crossName]);
             }
 
@@ -188,7 +198,11 @@ namespace CrosswordManager
                     // Enter
                     case 1:
                         Console.SetCursorPosition(13, 17);
-                        string guess = Console.ReadLine().ToUpper();
+                        string? guess = Console.ReadLine().ToUpper();
+                        if (guess == null)
+                        {
+                            guess = string.Empty;
+                        }
                         // If the guess isnt blank
                         if (!_val.BlankCheck([guess]))
                         {
@@ -462,7 +476,7 @@ namespace CrosswordManager
             Console.ForegroundColor = ConsoleColor.White;
             char direction;
             string word = "";
-            string clue = ""; // Initialize clue
+            string? clue = ""; // Initialize clue
 
             Char[] validChoice = new Char[2];
             validChoice = ['d', 'a'];
@@ -498,6 +512,10 @@ namespace CrosswordManager
                 {
                     Console.SetCursorPosition(0, 19);
                     clue = Console.ReadLine();
+                    if (clue == null)
+                    {
+                        clue = string.Empty;
+                    }
                     invalid = _val.BlankCheck([clue]);
                 }
                 // Word is saved
