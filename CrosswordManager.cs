@@ -55,7 +55,9 @@ namespace CrosswordManager
 
         }
 
-        public void LoadCreationMenu()
+        // Loading either for creation or playing
+        // type = 0 loads creation, type = 1 loads play
+        public void LoadCrosswordMenu(int menuType)
         {
             Console.Clear();
 
@@ -91,9 +93,18 @@ namespace CrosswordManager
                     Console.SetCursorPosition((Console.WindowWidth / 2) - succText.Length / 2, 6);
                     Console.WriteLine(succText);
                     Console.ReadKey();
+
                     // Open the menu
-                    CreationMenu(loadedCwd);
-                    return;
+                    if (menuType == 0)
+                    {
+                        CreationMenu(loadedCwd);
+                        return;
+                    }
+                    else if (menuType == 1)
+                    {
+                        PlayMenu(loadedCwd);
+                        return;
+                    }
                 }
             }
 
@@ -104,6 +115,161 @@ namespace CrosswordManager
             Console.ReadKey();
             Console.Clear();
             return;
+        }
+
+        public void PlayMenu(Crossword cwd)
+        {
+            Console.Clear();
+            int[] crossPos = [Console.WindowWidth / 3, 1];
+
+            // Get necessary information
+            int wordAmount = cwd.wordAmount;
+            int currentWord = 0;
+            Clue currentClue = cwd.wordClue[currentWord];
+
+            // Display
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.SetCursorPosition(0, 20);
+            Console.Write("Use ARROW KEYS to move between clues, press ENTER then TYPE to enter word, press ENTER to submit guess, press ESC to exit.");
+            Console.ForegroundColor = ConsoleColor.White;
+
+            bool moveOn = false;
+            bool changed = false;
+            int[] empty = [0, 0];
+            // Different val for what the user does: -2 = right arrow, -1 = left arrow,
+            int userFunc = -99;
+            PrintGrid(cwd, crossPos, 1);
+            Console.SetCursorPosition(0, 16);
+            Console.WriteLine("Word: " + (currentWord + 1).ToString() + " Clue: " + currentClue.clue);
+            Console.Write("Enter word: ");
+            while (!moveOn)
+            {
+                // If the screen needs to be redrawn
+                if (changed)
+                {
+                    // Override the previous grid
+                    PrintGrid(cwd, crossPos, 1);
+                    ChangePlayGrid(cwd, crossPos, currentClue, 0);
+
+
+                    Console.SetCursorPosition(0, 16);
+                    Console.WriteLine("Word: " + (currentWord + 1).ToString() + " Clue: " + currentClue.clue);
+                    Console.Write("Enter word: ");
+
+                }
+
+                // Retrieve the users input
+                (empty, userFunc) = _val.ArrowCheck(empty, 0, 0, 1);
+                
+                switch (userFunc)
+                {
+                    // Right arrow
+                    case -2:
+                        currentWord += 1;
+                        if (currentWord > wordAmount - 1)
+                        {
+                            currentWord = 0;
+                        }
+                        currentClue = cwd.wordClue[currentWord];
+                        changed = true;
+                        break;
+
+                    // Left arrow
+                    case -1:
+                        currentWord -= 1;
+                        if (currentWord < 0)
+                        {
+                            currentWord = wordAmount - 1;
+                        }
+                        currentClue = cwd.wordClue[currentWord];
+                        changed = true;
+                        break;
+
+                    // Enter
+                    case 1:
+                        Console.SetCursorPosition(13, 17);
+                        string guess = Console.ReadLine().ToUpper();
+                        // If the guess isnt blank
+                        if (!_val.BlankCheck([guess]))
+                        {
+                            // Checks if the answer is correct
+                            string answer = currentClue.word;
+                            if (guess == answer)
+                            {
+                                CorrectWord(cwd, currentClue);
+                                changed = true;
+                            }
+                            else
+                            {
+                                Console.SetCursorPosition(0, 18);
+                                Console.WriteLine("Incorrect, try again. Press any key.");
+                                Console.ReadKey(true);
+                                ClearCurrentLine([0, 18]);
+                            }
+                        }
+                        ClearCurrentLine([0,17]);
+                        break;
+
+                    // Esc
+                    case 2:
+                        ClearCurrentLine([0, 16]);
+                        ClearCurrentLine([0, 17]);
+                        Console.SetCursorPosition(0, 16);
+                        Console.Write("Exiting, press any key to exit.");
+                        Console.ReadKey(true);
+                        Console.Clear();
+                        return;
+                }
+            }
+        }
+
+        public void ChangePlayGrid(Crossword cwd, int[] crossPos, Clue currentClue, int col)
+        {
+            // Find positions to start highlighting
+            int startRow = currentClue.startPos[0];
+            int startCol = currentClue.startPos[1];
+
+            Console.ForegroundColor = ConsoleColor.Red;
+
+            for (int i = 0; i < currentClue.word.Length; i++)
+            {
+                if (currentClue.direction == 'd')
+                {
+                    int[] screenPos = CalcCellPos(crossPos, startRow + i, startCol);
+                    Console.SetCursorPosition(screenPos[0], screenPos[1]);
+                    Console.Write(cwd.guessGrid[startRow + i, startCol]);
+                }
+                else if (currentClue.direction == 'a')
+                {
+                    int[] screenPos = CalcCellPos(crossPos, startRow, startCol + i);
+                    Console.SetCursorPosition(screenPos[0], screenPos[1]);
+                    Console.Write(cwd.guessGrid[startRow, startCol + i]);
+                }
+            }
+
+            // Make it white when done
+            Console.ForegroundColor = ConsoleColor.White;
+        }
+
+        public void CorrectWord(Crossword cwd, Clue clue)
+        {
+            for (int i = 0; i < clue.word.Length; i++)
+            {
+                string letter = clue.word[i].ToString() + " ";
+                if (clue.direction == 'd')
+                {
+                    // Set row and columns
+                    int r = clue.startPos[0] + i;
+                    int c = clue.startPos[1];
+                    cwd.guessGrid[r, c] = letter;
+                }
+                else if (clue.direction == 'a')
+                {
+                    int r = clue.startPos[0];
+                    int c = clue.startPos[1] + i;
+                    cwd.guessGrid[r, c] = letter;
+                }
+            }
         }
 
         public void PrintTabs()
@@ -178,7 +344,7 @@ namespace CrosswordManager
 
             // Print the crossword
             int[] cwdPos = [Console.WindowWidth / 5, 3];
-            PrintGrid(cwd, cwdPos);
+            PrintGrid(cwd, cwdPos, 0);
             CrosswordInteraction(cwdPos, cwd);
         }
 
@@ -194,13 +360,24 @@ namespace CrosswordManager
         }
 
         // Draws the crossword grid
-        public void PrintGrid(Crossword c, int[] linePos)
+        // vers = 0, creation - vers = 1, play
+        public void PrintGrid(Crossword c, int[] linePos, int vers)
         {
             int rw = c.rows;
             int col = c.columns;
-            string[,] grid = c.cells;
+            string[,] grid;
+            if (vers == 0)
+            {
+                grid = c.cells;
+            }
+            else
+            {
+                grid = c.guessGrid;
+            }
+
             int line = linePos[1];
             Console.SetCursorPosition(linePos[0], linePos[1]);
+            // Normal printgrid
             for (int r = 0; r < rw; r++)
             {
                 for (int cl = 0; cl < col; cl++)
@@ -224,7 +401,7 @@ namespace CrosswordManager
             while (!moveOn)
             {
                 previousCell = currentCell;
-                (currentCell, altFunc) = _val.ArrowCheck(currentCell, cwd.rows, cwd.columns);
+                (currentCell, altFunc) = _val.ArrowCheck(currentCell, cwd.rows, cwd.columns, 0);
 
                 if (altFunc == 0)
                 {
@@ -244,7 +421,7 @@ namespace CrosswordManager
                 else if (altFunc == 1)
                 {
                     AddWord(cwd, currentCell);
-                    PrintGrid(cwd, [Console.WindowWidth / 5, 3]);
+                    PrintGrid(cwd, [Console.WindowWidth / 5, 3], 0);
                     Console.SetCursorPosition(originPos[0], originPos[1]);
                     currentCell = [0, 0];
                 }
@@ -297,7 +474,7 @@ namespace CrosswordManager
             while(invalid)
             {
                 Console.SetCursorPosition(0, 19);
-                word = Console.ReadLine();
+                word = Console.ReadLine().ToUpper();
                 invalid = _val.BlankCheck([word]);
             }
 
@@ -328,7 +505,7 @@ namespace CrosswordManager
                 Console.SetCursorPosition(0, 18);
 
                 // Add the word to the crossword object
-                cwd.AddWordClue(word, clue, direction);
+                cwd.AddWordClue(word, clue, direction, currentCell);
                 cwd.UpdateGrid(currentCell, word, direction);
                 ClearCurrentLine([0, 18]);
                 Console.WriteLine("Word is saved. Press ANY key to continue.");
@@ -433,8 +610,10 @@ namespace CrosswordManager
         public int rows;
         public int columns;
         public string[,] cells;
-        // Holds words and clues in a dictionary pair
-        public Dictionary<string, Clue> wordClue = new Dictionary<string, Clue>();
+        public string[,] guessGrid;
+        public int wordAmount = 0;
+        // Holds a number for each word, then the information for each as an object
+        public Dictionary<int, Clue> wordClue = new Dictionary<int, Clue>();
         private FileHandler fileH = new FileHandler();
 
         public Crossword(String t, int r, int c)
@@ -443,15 +622,24 @@ namespace CrosswordManager
             rows = r;
             columns = c;
             cells = new string[rows, columns];
-            // Fill the grid with astericks
-            for (int rw=0; rw < rows; rw++)
+            guessGrid = new string[rows, columns];
+            // Fill the grids
+            cells = FillGrid(cells);
+            guessGrid = FillGrid(guessGrid);
+
+        }
+
+        // Fill the grid with astericks
+        public string[,] FillGrid(string[,] grid)
+        {
+            for (int rw = 0; rw < rows; rw++)
             {
-                for (int cl=0; cl < columns; cl++)
+                for (int cl = 0; cl < columns; cl++)
                 {
-                    cells[rw, cl] = "*"+" ";
+                    grid[rw, cl] = "*" + " ";
                 }
             }
-
+            return grid;
         }
 
         //Checks if the grid is 'empty' or not
@@ -470,16 +658,17 @@ namespace CrosswordManager
         }
 
         // Add a word/clue to the dictionary
-        public void AddWordClue(string word, string clue, char direction)
+        public void AddWordClue(string word, string clue, char direction, int[] pos)
         {
-            wordClue.Add(word, new Clue(clue, direction));
+            word = word.ToUpper();
+            wordClue.Add(wordAmount, new Clue(word, clue, direction, pos));
+            wordAmount += 1;
         }
 
         // Updates the grid for a new word
         public void UpdateGrid(int[] cellPos, string word, char dir)
         {
             string[] wordArray = word.Select(c => c.ToString()).ToArray();
-            int charac = 0;
             for (int i = 0; i<word.Length; i++)
             {
                 if (dir == 'd')
@@ -507,14 +696,18 @@ namespace CrosswordManager
     // Holds the clue and direction
     class Clue
     {
+        public string word;
         public string clue;
         // 0 = across, 1 = down
         public char direction;
+        public int[] startPos;
 
-        public Clue(string c, char d)
+        public Clue(string w, string c, char d, int[] sP)
         {
+            word = w;
             clue = c;
             direction = d;
+            startPos = sP;
         }
     }
 }

@@ -102,7 +102,8 @@ namespace Validation
         }
 
         // Repeats until an arrow key is pressed
-        public (int[], int) ArrowCheck(int[] currCell, int nRow, int nCol)
+        // usage = 0, arrows for creation - usage = 1, arrows for play
+        public (int[], int) ArrowCheck(int[] currCell, int nRow, int nCol, int usage)
         {
             int altFunc = 0;
             int row = currCell[0];
@@ -123,17 +124,32 @@ namespace Validation
                     }
                     break;
                 case ConsoleKey.LeftArrow:
-                    if (!PosCheck(--col, nCol))
+                    if (usage == 0)
                     {
-                        col++;
+                        if (!PosCheck(--col, nCol))
+                        {
+                            col++;
+                        }
                     }
-                    break;
+                    // For play menu
+                    else
+                    {
+                        return (new int[] { 0, 0 }, -1);
+                    }
+                        break;
                 case ConsoleKey.RightArrow:
-                    if (!PosCheck(++col, nCol))
+                    if (usage == 0)
                     {
-                        col--;
+                        if (!PosCheck(++col, nCol))
+                        {
+                            col--;
+                        }
                     }
-                    break;
+                    else
+                    {
+                        return (new int[] { 0, 0 }, -2);
+                    }
+                        break;
                 case ConsoleKey.Enter:
                     altFunc = 1;
                     break;

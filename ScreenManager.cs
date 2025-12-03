@@ -100,7 +100,7 @@ namespace ScreenManager
 
             // Creating objects for each menu subsection
             _sections.Add(new MenuSection("Create", ["New", "Load"], ['n', 'l', 'b'], 0, false, [], [], 0));
-            _sections.Add(new MenuSection("Solve", ["New", "Load"], ['n', 'l', 'b'], 0, false, [], [], 12));
+            _sections.Add(new MenuSection("Solve", ["Load"], ['l', 'b'], 0, false, [], [], 12));
             _sections.Add(new MenuSection("User", ["Login", "Register"], ['l', 'r', 'b'], 1, true, ["Log out", "Change Role"], ['l', 'c', 'b'], 23));
             _sections.Add(new MenuSection("Quit", [""], [], 0, false, [], [], 33));
             _screenWidth = Console.WindowWidth;
@@ -291,17 +291,19 @@ namespace ScreenManager
                     {
                         // new
                         case 'n':
-                            // Create section
-                            if (section == 0)
-                            {
-                                _cwScreen.IniCreationMenu();
-                            }
+                            _cwScreen.IniCreationMenu();
                             break;
                             // load
                         case 'l':
                             if (section == 0)
                             {
-                                _cwScreen.LoadCreationMenu();
+                                // Creation
+                                _cwScreen.LoadCrosswordMenu(0);
+                            }
+                            else
+                            {
+                                // PLay
+                                _cwScreen.LoadCrosswordMenu(1);
                             }
                             break;
                         default:
