@@ -39,12 +39,14 @@ namespace UserManager
 
         }
 
+        // New user from program
         public void NewUser(String name, String pwd, bool role)
         {
             accounts.Add(new User(name, StringHash(pwd), role));
             SerialiseList(USER_FILE);
         }
         
+        // New user from file
         public void NewUser(User newUser)
         {
             accounts.Add(newUser);
@@ -78,6 +80,7 @@ namespace UserManager
             return (verified, admin);
         }
 
+        // Method for checking and then changing the users role
         public bool ChangeUserRole(String name, int role)
         {
             bool changed = false;
@@ -128,6 +131,7 @@ namespace UserManager
             role = r;
         }
 
+        // Changes the attribute
         public void ChangeRole(bool newRole)
         {
             this.role = newRole;

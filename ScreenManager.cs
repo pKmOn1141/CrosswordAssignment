@@ -106,6 +106,7 @@ namespace ScreenManager
             _screenWidth = Console.WindowWidth;
         }
 
+        // Displays the basic parts of the menu
         public void DisplayMenu()
         {
             // Writing the header to the console
@@ -128,6 +129,7 @@ namespace ScreenManager
             MenuInteraction(availableInp);
         }
 
+        // Creates the interactive menu parts
         public Char[] CreateMainMenu()
         {
             Char[] chars = [];
@@ -221,6 +223,7 @@ namespace ScreenManager
             }
         }
 
+        // Allows interaction with the menus
         public void MenuInteraction(Char[] availableInps)
         {
             bool fin = false;
@@ -353,6 +356,7 @@ namespace ScreenManager
         }
     }
 
+    // Manages the login and account menu sections
     class AccountMenu
     {
         private UserList _userAccounts;
@@ -407,6 +411,7 @@ namespace ScreenManager
             return loggedStatus;
         }
 
+        // Creates the menu for logging in
         public int LoginMenu()
         {
             int loggedStatus = -1;
@@ -451,6 +456,7 @@ namespace ScreenManager
             }
         }
 
+        // The menu for registering a new account
         public int RegisterMenu()
         {
             int loggedStatus = -1;
@@ -496,6 +502,7 @@ namespace ScreenManager
             return loggedStatus;
         }
 
+        // The menu for allowing changing of roles
         public void ChangeRoleMenu(int loggedStatus)
         {
             Console.Clear();

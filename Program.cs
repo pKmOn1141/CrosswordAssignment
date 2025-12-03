@@ -18,6 +18,7 @@ namespace CrosswordAssignment
             Menu mainMenu = new Menu(userAccounts, CWD_FOLDER);
             Validator validation = new Validator();
 
+            // Start of program
             validation.FirstLoadCheck(USER_FILE, CWD_FOLDER, userAccounts);
             mainMenu.DisplayMenu();
         }

@@ -50,6 +50,7 @@ namespace FileManager
             }
         }
 
+        // Turn the objects from a file into the program
         public void DeSerialiseUser(String filePath, UserList accounts)
         {
             try
@@ -74,6 +75,7 @@ namespace FileManager
             }
         }
 
+        // Turn a crossword file into an object
         public (Crossword, bool) DeSerialiseCwd(String filePath)
         {
             try

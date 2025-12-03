@@ -5,6 +5,7 @@ using Validation;
 
 namespace CrosswordManager
 {
+    // The menu parts of the crosswords
     class CrosswordScreens
     {
         private Validator _val = new Validator();
@@ -127,6 +128,7 @@ namespace CrosswordManager
             return;
         }
 
+        // The menu for when playing a crossword
         public void PlayMenu(Crossword cwd)
         {
             Console.Clear();
@@ -237,6 +239,7 @@ namespace CrosswordManager
             }
         }
 
+        // Highlights and changes the grid when the user is moving through clues
         public void ChangePlayGrid(Crossword cwd, int[] crossPos, Clue currentClue, int col)
         {
             // Find positions to start highlighting
@@ -265,6 +268,7 @@ namespace CrosswordManager
             Console.ForegroundColor = ConsoleColor.White;
         }
 
+        // Changes the guessGrid when the player gets a word correct
         public void CorrectWord(Crossword cwd, Clue clue)
         {
             for (int i = 0; i < clue.word.Length; i++)
@@ -286,6 +290,7 @@ namespace CrosswordManager
             }
         }
 
+        // Prints the tab for creating a crossword
         public void PrintTabs()
         {
             // Displaying the text onto the console
@@ -303,6 +308,7 @@ namespace CrosswordManager
             }
         }
 
+        // Ensures that a valid integer is inputted
         public int IntInput(bool moveOn, int winPos, int line, int[] errorPos)
         {
             int input = 0;
@@ -404,6 +410,7 @@ namespace CrosswordManager
             }
         }
 
+        // Interacting with the create crossword menu
         public void CrosswordInteraction(int[] originPos, Crossword cwd)
         {
             int[] currentCell = [0, 0];
@@ -622,6 +629,7 @@ namespace CrosswordManager
         }
     }
 
+    // The crossword class
     class Crossword
     {
         public String title;
@@ -701,6 +709,7 @@ namespace CrosswordManager
             }
         }
 
+        // Serialising a crossword to a text file
         public void SaveCrossword(String cwdFolder)
         {
             string fileName = Regex.Replace(title, @"[^a-zA-Z0-9]", "").ToLower();
